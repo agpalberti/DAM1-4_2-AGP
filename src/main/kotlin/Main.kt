@@ -1,5 +1,7 @@
 package un4.collections
 
+import kotlin.math.max
+
 data class Tienda(val nombre: String, val clientes: List<Clientes>) {
 
     fun obtenerConjuntoDeClientes(): Set<Clientes> = clientes.toSet()
@@ -33,10 +35,13 @@ data class Tienda(val nombre: String, val clientes: List<Clientes>) {
 
     fun obtenerProductosPedidosPorTodos():Set<Producto>{
         val setProducto = mutableSetOf<Producto>()
-        clientes.forEach{  }//TODO
+        clientes.forEach{ it.pedidos.forEach {it.productos.all }
+    }
     }
 
-    fun obtenerNumeroVecesProductoPedido(producto:Producto):Int{} //TODO
+    fun obtenerNumeroVecesProductoPedido(producto:Producto):Int{
+        clientes.forEach
+    } //TODO
 
     fun agrupaClientesPorCiudad():Map<Ciudad,List<Clientes>>{} //TODO
 
@@ -58,7 +63,14 @@ data class Clientes(val nombre: String, val ciudad: Ciudad, val pedidos: List<Pe
         return listaProductos.toList()
     }
 
-    fun encuentraProductoMasCaro():Producto? = pedidos.filter{ it.estaEntregado } //TODO
+    fun encuentraProductoMasCaro():Producto?{
+        val list = mutableListOf<Double>()
+        pedidos.filter{it.estaEntregado}.forEach { it.productos.forEach { list.add(maxOf(it.precio))}}
+        val precio = list.maxByOrNull { it }
+        val lista = mutableListOf<Producto?>()
+        pedidos.forEach { it -> lista.add(it.productos.find { it.precio == precio }) }
+        return lista.maxByOrNull { it?.precio ?: 0.0 }
+    } //TODO
 }
 
 data class Pedido(val productos: List<Producto>, val estaEntregado: Boolean)
