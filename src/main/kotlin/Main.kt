@@ -4,11 +4,7 @@ data class Tienda(val nombre: String, val clientes: List<Clientes>) {
 
     fun obtenerConjuntoDeClientes(): Set<Clientes> = clientes.toSet()
 
-    fun obtenerCiudadesDeClientes(): Set<Ciudad> {
-        val ciudades = mutableSetOf<Ciudad>()
-        clientes.forEach { ciudades.add(it.ciudad) }
-        return ciudades.toSet()
-    }
+    fun obtenerCiudadesDeClientes(): Set<Ciudad> = clientes.map{ it.ciudad}.toSet()
 
     fun obtenerClientesPor(ciudad: Ciudad): List<Clientes> = clientes.filter { it.ciudad == ciudad }
 
@@ -27,24 +23,11 @@ data class Tienda(val nombre: String, val clientes: List<Clientes>) {
 
     fun obtenerProductosPedidos(): Set<Producto> = clientes.flatMap { it.pedidos }.flatMap { it.productos }.toSet()
 
-    fun obtenerProductosPedidosPorTodos(): Set<Producto> {
-        val setProducto = mutableSetOf<Producto>()
-        clientes.forEach { it.pedidos.forEach { it.productos.all } }
-    }//todo
+    fun obtenerProductosPedidosPorTodos(): Set<Producto> =  //todo
 
-    fun obtenerNumeroVecesProductoPedido(producto: Producto): Int {
-        var counter = 0
-        clientes.forEach { cliente -> cliente.pedidos.forEach { pedido -> counter += pedido.productos.count { producto1 -> producto1 == producto } } }
-        return counter
-    } //TODO
+    fun obtenerNumeroVecesProductoPedido(producto: Producto): Int = obtenerProductosPedidos().count { it == producto }
 
-    fun agrupaClientesPorCiudad(): Map<Ciudad, List<Clientes>> {
-        val mapClientesCiudad = mutableMapOf<Ciudad, List<Clientes>>()
-        val setCiudades = mutableSetOf<Ciudad>()
-        clientes.forEach { setCiudades.add(it.ciudad) }
-        setCiudades.forEach { mapClientesCiudad[it] = obtenerClientesPor(it) }
-        return mapClientesCiudad.toMap()
-    }
+    fun agrupaClientesPorCiudad(): Map<Ciudad, List<Clientes>> = clientes.groupBy { it.ciudad }
 
     fun mapeaNombreACliente(): Map<String, Clientes> {
         val mapClientes = mutableMapOf<String, Clientes>()
