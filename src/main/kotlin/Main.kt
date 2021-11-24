@@ -81,3 +81,23 @@ data class Ciudad(val nombre: String) {
     override fun toString() = nombre
 }
 
+fun main(){
+    val cadiz = Ciudad("Cádiz")
+    val jerez = Ciudad("Jerez")
+    val puertoReal = Ciudad("Puerto Real")
+    val chiclana = Ciudad("Chiclana")
+    val algeciras = Ciudad("Algeciras")
+
+    val silla = Producto("Silla",40.0)
+    val mesa = Producto("Mesa", 80.50)
+    val lampara = Producto("Lámpara", 30.25)
+    val tv = Producto("Televisión", 200.99)
+    val florero = Producto("Florero", 15.00)
+    val teclado = Producto ("Teclado", 31.00)
+
+    val pedido1 = Pedido(listOf(florero,florero,lampara),estaEntregado = false)
+    val pedido2 = Pedido(listOf(mesa,tv,silla,silla,silla,silla), estaEntregado = false)
+    val pedido3 = Pedido(listOf(teclado,tv),estaEntregado = true)
+    val pedido4 = Pedido(listOf(teclado,tv,florero,silla,mesa), true)
+    val pedido5
+}
