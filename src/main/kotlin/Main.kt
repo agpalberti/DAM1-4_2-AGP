@@ -4,7 +4,7 @@ data class Tienda(val nombre: String, val clientes: List<Clientes>) {
 
     fun obtenerConjuntoDeClientes(): Set<Clientes> = clientes.toSet()
 
-    fun obtenerCiudadesDeClientes(): Set<Ciudad> = clientes.map{ it.ciudad}.toSet()
+    fun obtenerCiudadesDeClientes(): Set<Ciudad> = clientes.map { it.ciudad }.toSet()
 
     fun obtenerClientesPor(ciudad: Ciudad): List<Clientes> = clientes.filter { it.ciudad == ciudad }
 
@@ -16,69 +16,42 @@ data class Tienda(val nombre: String, val clientes: List<Clientes>) {
 
     fun encuentraClienteDe(ciudad: Ciudad): Clientes? = clientes.find { it.ciudad == ciudad }
 
-    fun obtenerClientesOrdenadosPorPedidos(): List<Clientes> = clientes.sortedBy { it.pedidos.size }
+    fun obtenerClientesOrdenadosPorPedidos(): List<Clientes> = clientes.sortedByDescending { it.pedidos.size }
 
     fun obtenerClientesConPedidosSinEntregar(): Set<Clientes> =
-        clientes.filter { it -> it.pedidos.any { !it.estaEntregado } }.toSet()
+        clientes.partition { cliente -> cliente.pedidos.count { it.estaEntregado } < cliente.pedidos.count { !it.estaEntregado } }.second.toSet()
 
     fun obtenerProductosPedidos(): Set<Producto> = clientes.flatMap { it.pedidos }.flatMap { it.productos }.toSet()
 
-    fun obtenerProductosPedidosPorTodos(): Set<Producto> =  //todo
+    fun obtenerProductosPedidosPorTodos(): Set<Producto> =
+        clientes.fold(obtenerProductosPedidos()) { acc, cliente -> acc.intersect(cliente.pedidos.flatMap { it.productos }.toSet()) }
 
     fun obtenerNumeroVecesProductoPedido(producto: Producto): Int = obtenerProductosPedidos().count { it == producto }
 
     fun agrupaClientesPorCiudad(): Map<Ciudad, List<Clientes>> = clientes.groupBy { it.ciudad }
 
-    fun mapeaNombreACliente(): Map<String, Clientes> {
-        val mapClientes = mutableMapOf<String, Clientes>()
-        clientes.forEach { mapClientes[it.nombre] = it }
-        return mapClientes.toMap()
-    }
+    fun mapeaNombreACliente(): Map<String, Clientes> = clientes.associateBy { it.nombre }
 
-    fun mapeaClienteACiudad(): Map<Clientes, Ciudad> {
-        val mapClienteCiudad = mutableMapOf<Clientes, Ciudad>()
-        clientes.forEach { mapClienteCiudad[it] = it.ciudad }
-        return mapClienteCiudad.toMap()
-    }
+    fun mapeaClienteACiudad(): Map<Clientes, Ciudad> = clientes.associateWith { it.ciudad }
 
-    fun mapeaNombreClienteACiudad(): Map<String,Ciudad>{
-        val mapNombreClientesCiudad = mutableMapOf<String,Ciudad>()
-        clientes.forEach { mapNombreClientesCiudad[it.nombre] = it.ciudad }
-        return mapNombreClientesCiudad
-    }
+    fun mapeaNombreClienteACiudad(): Map<String, Ciudad> = clientes.associate { Pair(it.nombre, it.ciudad) }
 
-    fun obtenerClienteConMaxPedidos(): Clientes?{
-        val listaClientesNumeroPedidos = mutableListOf<Pair<Clientes,Int>>()
-        clientes.forEach { listaClientesNumeroPedidos.add(Pair(it,it.pedidos.size)) }
-    }//TODO
-
-
+    fun obtenerClienteConMaxPedidos(): Clientes? = clientes.maxByOrNull { it.pedidos.size }
 
 }
 
 data class Clientes(val nombre: String, val ciudad: Ciudad, val pedidos: List<Pedido>) {
     override fun toString() = "$nombre from ${ciudad.nombre}"
 
-    fun obtenerProductoMasCaroPedido():Producto?{
-        val listaProductoPrecio = mutableListOf<Pair<Producto, Double>>()
-        pedidos.forEach { pedido -> pedido.productos.forEach { listaProductoPrecio.add(Pair(it, it.precio)) } }
-        return listaProductoPrecio.find { par -> par.second == listaProductoPrecio.maxOf { it.second } }?.first
-    }
-
-    fun dineroGastado(): Double {
-        var dineroGastado = 0.0
-        pedidos.forEach { it -> it.productos.forEach { dineroGastado += it.precio } }
-        return dineroGastado
-    }
-
     fun obtenerProductosPedidos(): List<Producto> = pedidos.flatMap { it.productos }
 
-    fun encuentraProductoMasCaro(): Producto? {
-        val listaProductoPrecio = mutableListOf<Pair<Producto, Double>>()
-        pedidos.filter { it.estaEntregado }
-            .forEach { pedido -> pedido.productos.forEach { listaProductoPrecio.add(Pair(it, it.precio)) } }
-        return listaProductoPrecio.find { par -> par.second == listaProductoPrecio.maxOf { it.second } }?.first
-    }
+    fun encuentraProductoMasCaro(): Producto? =
+        pedidos.filter { it.estaEntregado }.flatMap { it.productos }.maxByOrNull { it.precio }
+
+    fun obtenerProductoMasCaroPedido(): Producto? = pedidos.flatMap { it.productos }.maxByOrNull { it.precio }
+
+    fun dineroGastado(): Double = pedidos.flatMap { it.productos }.sumOf { it.precio }
+
 }
 
 data class Pedido(val productos: List<Producto>, val estaEntregado: Boolean)
