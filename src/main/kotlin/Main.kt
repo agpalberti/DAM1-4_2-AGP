@@ -81,23 +81,90 @@ data class Ciudad(val nombre: String) {
     override fun toString() = nombre
 }
 
-fun main(){
+fun main() {
     val cadiz = Ciudad("Cádiz")
     val jerez = Ciudad("Jerez")
     val puertoReal = Ciudad("Puerto Real")
     val chiclana = Ciudad("Chiclana")
     val algeciras = Ciudad("Algeciras")
 
-    val silla = Producto("Silla",40.0)
+    val silla = Producto("Silla", 40.0)
     val mesa = Producto("Mesa", 80.50)
     val lampara = Producto("Lámpara", 30.25)
     val tv = Producto("Televisión", 200.99)
     val florero = Producto("Florero", 15.00)
-    val teclado = Producto ("Teclado", 31.00)
+    val teclado = Producto("Teclado", 31.00)
 
-    val pedido1 = Pedido(listOf(florero,florero,lampara),estaEntregado = false)
-    val pedido2 = Pedido(listOf(mesa,tv,silla,silla,silla,silla), estaEntregado = false)
-    val pedido3 = Pedido(listOf(teclado,tv),estaEntregado = true)
-    val pedido4 = Pedido(listOf(teclado,tv,florero,silla,mesa), true)
-    val pedido5
+    val pedido1 = Pedido(listOf(florero, florero, lampara), false)
+    val pedido2 = Pedido(listOf(mesa, tv, silla, silla, silla, silla), false)
+    val pedido3 = Pedido(listOf(teclado, tv), true)
+    val pedido4 = Pedido(listOf(teclado, tv, florero, silla, mesa), true)
+    val pedido5 = Pedido(listOf(florero, mesa), true)
+    val pedido6 = Pedido(listOf(teclado, lampara), false)
+    val pedido7 = Pedido(listOf(teclado),true)
+    val pedido8 = Pedido(listOf(mesa),false)
+    val pedido9 = Pedido(listOf(),true)
+    val pedido10 = Pedido(listOf(),false)
+
+    val cliente1 = Clientes("Alejandro", chiclana, listOf(pedido1, pedido4, pedido5))
+    val cliente2 = Clientes("Bruno", algeciras, listOf(pedido1, pedido2, pedido4))
+    val cliente3 = Clientes("María", puertoReal, listOf(pedido5, pedido6))
+    val cliente4 = Clientes("Fernando", jerez, listOf(pedido3, pedido6))
+    val cliente5 = Clientes("Sergio", algeciras, listOf(pedido4, pedido3))
+    val cliente6 = Clientes("Hugo", chiclana, listOf(pedido5))
+    val cliente7 = Clientes("Prueba",jerez, listOf())
+    val cliente8 = Clientes("Alberto",puertoReal, listOf(pedido8,pedido7))
+    val cliente9 = Clientes("Pedro",cadiz, listOf(pedido9,pedido10))
+
+    val tienda1 = Tienda("Tienda Pakito", listOf(cliente1,cliente2,cliente3,cliente4,cliente5,cliente6,cliente7,cliente8,cliente9))
+
+    println("- TEST CLASE CLIENTE -\n\n")
+
+    println("CLIENTE 6")
+    println("Productos pedidos (debe salir mesa y florero):")
+    println(cliente6.obtenerProductosPedidos())
+    println("Producto más caro y entregado pedido (debe salir mesa):")
+    println(cliente6.encuentraProductoMasCaro())
+    println("Producto más caro pedido (debe salir mesa):")
+    println(cliente6.obtenerProductoMasCaroPedido())
+    println("Dinero gastado (debe salir 90.5):")
+    println(cliente6.dineroGastado())
+
+    println("\n\n")
+
+    println("CLIENTE 8")
+    println("Productos pedidos (mesa y teclado):")
+    println(cliente8.obtenerProductosPedidos())
+    println("Producto más caro y entregado pedido (teclado):")
+    println(cliente8.encuentraProductoMasCaro())
+    println("Producto más caro pedido (mesa):")
+    println(cliente8.obtenerProductoMasCaroPedido())
+    println("Dinero gastado (111.50):")
+    println(cliente8.dineroGastado())
+
+    println("\n\n")
+
+    println("CLIENTE 7")
+    println("Productos pedidos (lista vacía):")
+    println(cliente7.obtenerProductosPedidos())
+    println("Producto más caro y entregado pedido (null):")
+    println(cliente7.encuentraProductoMasCaro())
+    println("Producto más caro pedido (null):")
+    println(cliente7.obtenerProductoMasCaroPedido())
+    println("Dinero gastado (0.0):")
+    println(cliente7.dineroGastado())
+
+    println("\n\n")
+
+    println("CLIENTE 9")
+    println("Productos pedidos (lista vacía):")
+    println(cliente9.obtenerProductosPedidos())
+    println("Producto más caro y entregado pedido (null):")
+    println(cliente9.encuentraProductoMasCaro())
+    println("Producto más caro pedido (null):")
+    println(cliente9.obtenerProductoMasCaroPedido())
+    println("Dinero gastado (0.0):")
+    println(cliente9.dineroGastado())
+
+    println("\n\n - TEST CLASE TIENDA - \n\n")
 }
